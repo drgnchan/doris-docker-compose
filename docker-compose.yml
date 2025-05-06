@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  fe:
+    image: apache/doris:fe-2.1.9
+    container_name: doris-fe
+    hostname: fe
+    ports:
+      - "8030:8030"
+      - "9030:9030"
+    volumes:
+      - ./fe/conf:/opt/apache-doris/fe/conf
+      - ./fe/data:/opt/apache-doris/fe/doris-meta
+      - ./fe/log:/opt/apache-doris/fe/log
+    networks:
+      dorisnet:
+        ipv4_address: 172.20.0.2
+    entrypoint: ["/bin/bash", "-c"]
+    command: ["/opt/apache-doris/fe/bin/start_fe.sh && tail -f /dev/null"]
+
+  be1:
+    image: apache/doris:be-2.1.9
+    container_name: doris-be1
+    hostname: be1
+    volumes:
+      - ./be1/conf:/opt/apache-doris/be/conf
+      - ./be1/storage:/opt/apache-doris/be/storage
+      - ./be1/log:/opt/apache-doris/be/log
+    networks:
+      dorisnet:
+        ipv4_address: 172.20.0.3
+    entrypoint: ["/bin/bash", "-c"]
+    command: ["/opt/apache-doris/be/bin/start_be.sh && tail -f /dev/null"]
+
+  be2:
+    image: apache/doris:be-2.1.9
+    container_name: doris-be2
+    hostname: be2
+    volumes:
+      - ./be2/conf:/opt/apache-doris/be/conf
+      - ./be2/storage:/opt/apache-doris/be/storage
+      - ./be2/log:/opt/apache-doris/be/log
+    networks:
+      dorisnet:
+        ipv4_address: 172.20.0.4
+    entrypoint: ["/bin/bash", "-c"]
+    command: ["/opt/apache-doris/be/bin/start_be.sh && tail -f /dev/null"]
+
+  be3:
+    image: apache/doris:be-2.1.9
+    container_name: doris-be3
+    hostname: be3
+    volumes:
+      - ./be3/conf:/opt/apache-doris/be/conf
+      - ./be3/storage:/opt/apache-doris/be/storage
+      - ./be3/log:/opt/apache-doris/be/log
+    networks:
+      dorisnet:
+        ipv4_address: 172.20.0.5
+    entrypoint: ["/bin/bash", "-c"]
+    command: ["/opt/apache-doris/be/bin/start_be.sh && tail -f /dev/null"]
+
+networks:
+  dorisnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
